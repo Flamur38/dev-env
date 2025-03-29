@@ -1,4 +1,4 @@
->#!/usr/bin/env bash
+#!/usr/bin/env bash
 
 # ========== SETUP ==========
 dry_run="0"
