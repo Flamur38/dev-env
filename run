@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+export DEV_ENV="$script_dir"
+dry_run="0"
+grep_filter=""
+
+if [[ "$1" == "--dry" ]]; then
+    dry_run="1"
+fi
+
+if [[ "$1" != "" && "$1" != "--dry" ]]; then
+    grep_filter="$1"
+fi
+
+log() {
+    if [[ "$dry_run" == "1" ]]; then
+        echo "[DRY_RUN]: $1"
+    else
+        echo "$1"
+    fi
+}
+
+log "RUNNING setup scripts..."
+log "Filter: $grep_filter"
+log "Dry run: $dry_run"
+
+find "$script_dir/runs" -mindepth 1 -maxdepth 1 -type f -executable | while read -r script; do
+    if [[ "$grep_filter" != "" && "$script" != *"$grep_filter"* ]]; then
+        log "Skipping $script"
+        continue
+    fi
+
+    log "Running $script"
+    if [[ "$dry_run" == "0" ]]; then
+        "$script"
+    fi
+done
+

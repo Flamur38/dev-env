@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+echo "🖥️  Setting up Terminator terminal..."
+
+# 1. Install Terminator
+sudo apt update
+sudo apt install -y terminator
+
+# 2. Ensure the config dir exists
+mkdir -p "$HOME/.config/terminator"
+
+# 3. Copy config
+echo "📁 Copying Terminator config..."
+cp "$DEV_ENV/config-files/terminator_config" "$HOME/.config/terminator/config"
+
+# 5. Install helper script
+echo "📜 Installing tree.sh to /usr/local/bin..."
+sudo cp "$DEV_ENV/config-files/tree.sh" /usr/local/bin/tree.sh
+sudo chmod +x /usr/local/bin/tree.sh
+
+echo "✅ Terminator configuration applied."
+

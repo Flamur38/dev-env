@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+echo "🔧 Installing tmux..."
+
+sudo apt update
+sudo apt install -y tmux
+
+echo "✅ tmux installed."
+
+# Create local scripts dir if not exist
+mkdir -p "$HOME/.local/scripts"
+
+# Copy .tmux.conf if exists in your repo
+if [[ -f "$DEV_ENV/config-files/.tmux.conf" ]]; then
+    echo "📁 Copying .tmux.conf..."
+    cp "$DEV_ENV/config-files/.tmux.conf" "$HOME/.tmux.conf"
+else
+    echo "⚠️ No .tmux.conf found in config-files/ — skipping"
+fi
+

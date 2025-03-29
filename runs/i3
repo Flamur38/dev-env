@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+echo "🪟 Installing i3 and related packages..."
+
+sudo apt update
+sudo apt install -y i3 i3status xbacklight pavucontrol pulseaudio-utils
+
+echo "✅ i3 installed."
+
+# Copy configs
+mkdir -p "$HOME/.config/i3"
+mkdir -p "$HOME/.config/i3status"
+
+echo "📁 Copying i3 config..."
+cp "$DEV_ENV/config-files/.config/i3/config" "$HOME/.config/i3/config"
+
+
+echo "📁 Copying i3status config..."
+cp "$DEV_ENV/config-files/.config/i3status/config" "$HOME/.config/i3status/config"
+
+echo "✅ i3 configuration applied."
+

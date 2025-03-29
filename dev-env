@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+# ========== SETUP ==========
+dry_run="0"
+
+if [[ "$1" == "--dry" ]]; then
+    dry_run="1"
+fi
+
+if [[ -z "$DEV_ENV" ]]; then
+    echo "Error: DEV_ENV not set"
+    exit 1
+fi
+
+log() {
+    if [[ "$dry_run" == "1" ]]; then
+        echo "[DRY_RUN]: $1"
+    else
+        echo "$1"
+    fi
+}
+
+# ========== COPY FUNCTION ==========
+copy_file() {
+    src="$1"
+    dst="$2"
+
+    log "Copying: $src -> $dst"
+    if [[ "$dry_run" == "0" ]]; then
+        cp "$src" "$dst"
+    fi
+}
+
+# ========== BEGIN FILE COPY ==========
+log "Using DEV_ENV: $DEV_ENV"
+
+mkdir -p "$HOME/.config"
+mkdir -p "$HOME/.local/scripts"
+
+# Copy individual dotfiles
+copy_file "$DEV_ENV/config-files/.zshrc" "$HOME/.zshrc"
+copy_file "$DEV_ENV/config-files/.zsh_profile" "$HOME/.zsh_profile"
+copy_file "$DEV_ENV/config-files/.xprofile" "$HOME/.xprofile"
+
+# Copy contents of .config
+find "$DEV_ENV/config-files/.config" -mindepth 1 -maxdepth 1 | while read -r item; do
+    name=$(basename "$item")
+    copy_file "$item" "$HOME/.config/$name"
+done
+
+copy "$DEV_ENV/config-files/.Xresources" "$HOME/.Xresources"
+copy "$DEV_ENV/config-files/.xinitrc" "$HOME/.xinitrc"
+
