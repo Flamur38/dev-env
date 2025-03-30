@@ -15,7 +15,6 @@ order += "memory"
 order += "cpu_usage"
 order += "disk /"
 order += "battery all"
-order += "load"
 order += "tztime local"
 
 memory {
@@ -32,10 +31,6 @@ tztime local {
         format = "%Y-%m-%d %H:%M:%S"
 }
 
-load {
-        format = "%1min"
-}
-
 disk "/" {
         format = "%avail"
 }
@@ -43,6 +38,3 @@ disk "/" {
 cpu_usage {
     format = "CPU: %usage"
 }
-
-
-

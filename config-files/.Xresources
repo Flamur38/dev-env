@@ -2,7 +2,7 @@
 # 150% 144
 # 125% 120
 
-Xft.dpi: 144
+Xft.dpi: 192 
 Xft.antialias: true
 Xft.hinting: true
 Xft.hintstyle: hintslight
