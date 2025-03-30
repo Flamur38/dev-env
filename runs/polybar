@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+source "$(dirname "$0")/../utils.sh"
+
+echo "📦 Installing Polybar..."
+
+install_package polybar
+
+echo "✅ Polybar installed."
+
+# Sync Polybar config
+if [[ -d "$DEV_ENV/config-files/.config/polybar" ]]; then
+    echo "📁 Syncing Polybar config..."
+
+    clean_and_copy "$DEV_ENV/config-files/.config/polybar" "$HOME/.config/polybar"
+else
+    echo "⚠️ No polybar config found — skipping"
+fi
+

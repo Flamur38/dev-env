@@ -1,22 +1,15 @@
 #!/usr/bin/env bash
+source "$(dirname "$0")/../utils.sh"
 
-echo "🔧 Installing tmux..."
+echo "🔧 Installing and setting up tmux..."
 
-sudo apt update
-sudo apt install -y tmux
-
-echo "✅ tmux installed."
+install_package tmux
 
 # Ensure .local/scripts exists
 mkdir -p "$HOME/.local/scripts"
 
 # Copy .tmux.conf
-if [[ -f "$DEV_ENV/config-files/.tmux.conf" ]]; then
-    echo "📁 Copying .tmux.conf..."
-    cp "$DEV_ENV/config-files/.tmux.conf" "$HOME/.tmux.conf"
-else
-    echo "⚠️  No .tmux.conf found in config-files/ — skipping"
-fi
+clean_and_copy "$DEV_ENV/config-files/.tmux.conf" "$HOME/.tmux.conf"
 
 # Install TPM (Tmux Plugin Manager)
 if [[ ! -d "$HOME/.tmux/plugins/tpm" ]]; then
@@ -31,7 +24,7 @@ if command -v tmux >/dev/null; then
     echo "🔧 Installing tmux plugins..."
     "$HOME/.tmux/plugins/tpm/bin/install_plugins"
 else
-    echo "❌ tmux command not found, skipping plugin install"
+    echo "⚠️  tmux command not found, skipping plugin install"
 fi
 
 echo "✅ Tmux setup complete!"

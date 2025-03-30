@@ -1,31 +1,24 @@
 #!/usr/bin/env bash
+source "$(dirname "$0")/../utils.sh"
 
 echo "🚀 Installing Neovim (from GitHub release)..."
 
-# Install build deps
-sudo apt update
-sudo apt install -y curl tar gcc make unzip gettext libtool libtool-bin autoconf automake cmake pkg-config
+# Install build dependencies
+install_package curl tar gcc make unzip gettext libtool libtool-bin autoconf automake cmake pkg-config
 
-# Define version
+# Define version and download
 version="v0.10.0"
-
-# Download and extract Neovim
-curl -LO https://github.com/neovim/neovim/releases/download/${version}/nvim-linux64.tar.gz
+curl -LO "https://github.com/neovim/neovim/releases/download/${version}/nvim-linux64.tar.gz"
 tar xzf nvim-linux64.tar.gz
 
-# Clean previous install
+# Remove old and install new
 sudo rm -rf /opt/nvim
 sudo mv nvim-linux64 /opt/nvim
 sudo ln -sf /opt/nvim/bin/nvim /usr/local/bin/nvim
-
 rm nvim-linux64.tar.gz
+
 echo "✅ Neovim installed."
 
-# Copy config
-if [[ ! -d "$HOME/.config/nvim" ]]; then
-    echo "📁 Copying Neovim config from: $DEV_ENV/config-files/.config/nvim"
-    cp -r "$DEV_ENV/config-files/.config/nvim" "$HOME/.config/nvim"
-else
-    echo "⚠️ Neovim config already exists at ~/.config/nvim — skipping copy"
-fi
+# Sync Neovim config
+clean_and_copy "$DEV_ENV/config-files/.config/nvim" "$HOME/.config/nvim"
 

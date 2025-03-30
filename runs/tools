@@ -1,25 +1,39 @@
 #!/usr/bin/env bash
+source "$(dirname "$0")/../utils.sh"
 
-echo "🔧 Installing security tools..."
+echo "🔧 Installing general & security tools..."
 
-sudo apt update
-sudo apt install -y tmux curl terminator nmap nikto sqlmap python3 python3-pip \
-git jq netcat-openbsd wireshark tcpdump htop zsh bat dirb gobuster hydra john \
-aircrack-ng hashcat dnsutils smbclient whois wfuzz rdesktop steghide binwalk \
-foremost radare2 freerdp2-x11 nodejs npm
+# Combine both general CLI and security tools in one apt install call
+install_package \
+    tmux curl terminator nmap nikto sqlmap python3 python3-pip \
+    git jq netcat-openbsd wireshark tcpdump htop zsh bat dirb gobuster hydra john \
+    aircrack-ng hashcat dnsutils smbclient whois wfuzz rdesktop steghide binwalk \
+    foremost radare2 freerdp2-x11 nodejs npm \
+    ripgrep fd-find xclip tldr pavucontrol
 
-# Ensure npm is installed properly
-if ! command -v npm &>/dev/null; then
-    echo "❌ npm not found. Trying to fix with apt..."
-    sudo apt install -y npm
+# Symlink fd if not already done
+if ! command -v fd &> /dev/null && command -v fdfind &> /dev/null; then
+    echo "🔗 Creating symlink: fd -> fdfind"
+    mkdir -p "$HOME/.local/bin"
+    ln -sf "$(which fdfind)" "$HOME/.local/bin/fd"
+    export PATH="$HOME/.local/bin:$PATH"
 fi
 
-# Install pyright globally via npm (needs sudo for global)
+# Install pyright via npm (for Mason LSP)
 if command -v npm &>/dev/null; then
     echo "📦 Installing pyright via npm..."
     sudo npm install -g pyright
 else
-    echo "⚠️ Skipping pyright install — npm still not found."
+    echo "⚠️ npm not found — skipping pyright install."
+fi
+
+# Install fzf if not already cloned
+if [[ ! -d "$HOME/.fzf" ]]; then
+    echo "🌐 Cloning fzf..."
+    git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME/.fzf"
+    "$HOME/.fzf/install" --all
+else
+    echo "✅ fzf already installed"
 fi
 
 # Check if snap exists before trying to install with it
@@ -30,5 +44,5 @@ else
     echo "⚠️ Snap is not installed — skipping Snap packages."
 fi
 
-echo "✅ Tools installed."
+echo "✅ All tools installed and configured."
 
