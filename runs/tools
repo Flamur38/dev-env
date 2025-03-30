@@ -6,10 +6,29 @@ sudo apt update
 sudo apt install -y tmux curl terminator nmap nikto sqlmap python3 python3-pip \
 git jq netcat-openbsd wireshark tcpdump htop zsh bat dirb gobuster hydra john \
 aircrack-ng hashcat dnsutils smbclient whois wfuzz rdesktop steghide binwalk \
-foremost radare2 snapd freerdp2-x11 npm nodejs
+foremost radare2 freerdp2-x11 nodejs npm
 
-echo "📦 Installing Snap packages..."
-sudo snap install enum4linux seclists searchsploit
+# Ensure npm is installed properly
+if ! command -v npm &>/dev/null; then
+    echo "❌ npm not found. Trying to fix with apt..."
+    sudo apt install -y npm
+fi
+
+# Install pyright globally via npm (needs sudo for global)
+if command -v npm &>/dev/null; then
+    echo "📦 Installing pyright via npm..."
+    sudo npm install -g pyright
+else
+    echo "⚠️ Skipping pyright install — npm still not found."
+fi
+
+# Check if snap exists before trying to install with it
+if command -v snap &>/dev/null; then
+    echo "📦 Installing Snap packages..."
+    sudo snap install enum4linux seclists searchsploit
+else
+    echo "⚠️ Snap is not installed — skipping Snap packages."
+fi
 
 echo "✅ Tools installed."
 
