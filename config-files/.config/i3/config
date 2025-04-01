@@ -206,8 +206,8 @@ bindsym $mod+r mode "resize"
 bar {
         status_command i3status
         tray_output primary
-        font pango:monospace 30px
-        padding 6
+        font pango:monospace 25px
+        padding 2
 }
 
 # ------------------------------------------

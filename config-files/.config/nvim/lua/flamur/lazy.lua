@@ -55,8 +55,6 @@ require("lazy").setup({
 	},
 
     { "rose-pine/neovim", name = "rose-pine" },
-    -- { "folke/tokyonight.nvim", name = "tokyonight" },
-
 
 	-- Harpoon
 	{ "theprimeagen/harpoon" },
