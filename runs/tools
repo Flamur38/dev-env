@@ -9,7 +9,7 @@ install_package \
     git jq netcat-openbsd wireshark tcpdump htop zsh bat dirb gobuster hydra john \
     aircrack-ng hashcat dnsutils smbclient whois wfuzz rdesktop steghide binwalk \
     foremost radare2 freerdp2-x11 nodejs npm \
-    ripgrep fd-find xclip tldr pavucontrol
+    ripgrep fd-find xclip tldr pavucontrol 
 
 # Symlink fd if not already done
 if ! command -v fd &> /dev/null && command -v fdfind &> /dev/null; then
@@ -44,5 +44,19 @@ else
     echo "⚠️ Snap is not installed — skipping Snap packages."
 fi
 
-echo "✅ All tools installed and configured."
+# Install Google Chrome
+if ! command -v google-chrome &>/dev/null; then
+    echo "🌐 Installing Google Chrome..."
 
+    wget -q -O /tmp/google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+
+    sudo apt install -y /tmp/google-chrome.deb
+
+    rm /tmp/google-chrome.deb
+
+    echo "✅ Google Chrome installed."
+else
+    echo "✅ Google Chrome is already installed."
+fi
+
+echo "✅ All tools installed and configured."
