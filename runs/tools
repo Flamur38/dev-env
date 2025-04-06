@@ -9,7 +9,7 @@ install_package \
     git jq netcat-openbsd wireshark tcpdump htop zsh bat dirb gobuster hydra john \
     aircrack-ng hashcat dnsutils smbclient whois wfuzz rdesktop steghide binwalk \
     foremost radare2 freerdp2-x11 nodejs npm \
-    ripgrep fd-find xclip tldr pavucontrol 
+    ripgrep fd-find xclip tldr pavucontrol flameshot
 
 # Symlink fd if not already done
 if ! command -v fd &> /dev/null && command -v fdfind &> /dev/null; then
