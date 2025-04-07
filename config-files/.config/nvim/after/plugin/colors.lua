@@ -1,5 +1,5 @@
 function ColorMyPencils(color)
-	color = color or "rose-pine" --tokyonight-moon
+	color = color or "juliana" -- monokai
 	vim.cmd("colorscheme " .. color)
 
     -- Optional: Transparent background (uncomment if desired)
@@ -8,3 +8,5 @@ function ColorMyPencils(color)
 end
 
 ColorMyPencils()
+
+

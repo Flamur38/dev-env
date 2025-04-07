@@ -54,7 +54,12 @@ require("lazy").setup({
 		}
 	},
 
-    { "rose-pine/neovim", name = "rose-pine" },
+    -- { "rose-pine/neovim", name = "rose-pine" },
+    -- { "tanvirtin/monokai.nvim", priority = 1000 },
+    { "kaiuri/nvim-juliana", lazy = false, priority = 1000, config = true },
+
+
+
 
 	-- Harpoon
 	{ "theprimeagen/harpoon" },
