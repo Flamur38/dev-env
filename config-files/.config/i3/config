@@ -22,6 +22,10 @@ for_window [class="^.*"] border pixel 2
 for_window [class="^.*"] floating disable
 for_window [class="^.*"] client.focused #77dd77 #285577 #ffffff #2e9ef4   #285577
 
+# Hide window indicators (blue circle)
+show_marks no
+hide_edge_borders both
+
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
 #font pango:DejaVu Sans Mono 8
@@ -235,6 +239,12 @@ bindsym $mod+Shift+p exec --no-startup-id ~/.local/apps/play_next_bits
 
 exec --no-startup-id xrdb -merge ~/.Xresources
 
-exec_always --no-startup-id feh --bg-scale ~/Pictures/interstellar.jpg
+# exec_always --no-startup-id feh --bg-scale ~/Pictures/interstellar.jpg
 exec_always --no-startup-id ~/.config/polybar/launch_polybar.sh
+exec_always --no-startup-id feh --bg-scale ~/Pictures/rose-pine.png
+
+for_window [class="^.*"] border pixel 2
+
+# Reserve space for Polybar (manually with xrandr workaround)
+workspace_layout tabbed
 
