@@ -27,3 +27,16 @@ log_step() {
     echo -e "\n🔸 $1\n"
 }
 
+# New function 🔥
+ensure_command_installed() {
+    local cmd="$1"
+    local package="$2"
+
+    if ! command -v "$cmd" &> /dev/null; then
+        echo "📦 Command '$cmd' not found. Installing package '$package'..."
+        sudo apt install -y "$package"
+    else
+        echo "✅ Command '$cmd' already installed."
+    fi
+}
+

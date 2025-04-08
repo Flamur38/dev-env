@@ -1,42 +1,56 @@
 #!/usr/bin/env bash
+
 source "$(dirname "$0")/../utils.sh"
 
 echo "🔧 Installing general & security tools..."
 
-# Combine both general CLI and security tools in one apt install call
+# 1. Install base packages
 install_package \
+    build-essential \
     tmux curl terminator nmap nikto sqlmap python3 python3-pip \
     git jq netcat-openbsd wireshark tcpdump htop zsh bat dirb gobuster hydra john \
     aircrack-ng hashcat dnsutils smbclient whois wfuzz rdesktop steghide binwalk \
-    foremost radare2 freerdp2-x11 nodejs npm \
-    ripgrep fd-find xclip tldr pavucontrol flameshot
+    foremost radare2 freerdp2-x11 nodejs ripgrep fd-find xclip tldr pavucontrol flameshot \
+    pulseaudio-utils
 
-# Symlink fd if not already done
-if ! command -v fd &> /dev/null && command -v fdfind &> /dev/null; then
+# 2. Fix missing npm (Ubuntu issue)
+if ! command -v npm &>/dev/null; then
+    echo "📦 npm not found, installing manually..."
+    sudo apt install -y npm
+fi
+
+# 3. Configure npm for local user
+if command -v npm &>/dev/null; then
+    echo "🔧 Configuring npm for local user..."
+    mkdir -p "$HOME/.npm-global"
+    npm config set prefix "$HOME/.npm-global"
+    export PATH="$HOME/.npm-global/bin:$PATH"
+
+    # 4. Install pyright
+    echo "📦 Installing pyright globally via npm..."
+    npm install -g pyright
+else
+    echo "⚠️ npm is still missing, skipping pyright installation."
+fi
+
+# 5. Symlink fd if needed
+if ! command -v fd &>/dev/null && command -v fdfind &>/dev/null; then
     echo "🔗 Creating symlink: fd -> fdfind"
     mkdir -p "$HOME/.local/bin"
     ln -sf "$(which fdfind)" "$HOME/.local/bin/fd"
     export PATH="$HOME/.local/bin:$PATH"
 fi
 
-# Install pyright via npm (for Mason LSP)
-if command -v npm &>/dev/null; then
-    echo "📦 Installing pyright via npm..."
-    sudo npm install -g pyright
-else
-    echo "⚠️ npm not found — skipping pyright install."
-fi
-
-# Install fzf if not already cloned
+# 6. Install fzf if not already installed
 if [[ ! -d "$HOME/.fzf" ]]; then
     echo "🌐 Cloning fzf..."
     git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME/.fzf"
     "$HOME/.fzf/install" --all
 else
-    echo "✅ fzf already installed"
+    echo "✅ fzf already installed."
 fi
 
-# Check if snap exists before trying to install with it
+# 7. Install snap packages
 if command -v snap &>/dev/null; then
     echo "📦 Installing Snap packages..."
     sudo snap install enum4linux seclists searchsploit
@@ -44,19 +58,21 @@ else
     echo "⚠️ Snap is not installed — skipping Snap packages."
 fi
 
-# Install Google Chrome
+# 8. Install Google Chrome if missing
 if ! command -v google-chrome &>/dev/null; then
     echo "🌐 Installing Google Chrome..."
-
     wget -q -O /tmp/google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-
     sudo apt install -y /tmp/google-chrome.deb
-
     rm /tmp/google-chrome.deb
-
     echo "✅ Google Chrome installed."
 else
-    echo "✅ Google Chrome is already installed."
+    echo "✅ Google Chrome already installed."
 fi
 
 echo "✅ All tools installed and configured."
+
+
+ensure_command_installed "flameshot" "flameshot"
+ensure_command_installed "npm" "npm"
+
+

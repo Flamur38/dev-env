@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+source "$(dirname "$0")/../utils.sh"
+
+log_step "Installing Polybar..."
+
+install_package polybar
+
+# Copy Polybar config
+if [[ -d "$DEV_ENV/config-files/.config/polybar" ]]; then
+    echo "📁 Syncing Polybar config..."
+
+    clean_and_copy "$DEV_ENV/config-files/.config/polybar" "$HOME/.config/polybar"
+else
+    echo "⚠️ No Polybar config found — skipping"
+fi
+
+# Create the launch_polybar.sh script
+echo "⚙️ Creating launch_polybar.sh..."
+
+mkdir -p "$HOME/.config/polybar"
+
+cat > "$HOME/.config/polybar/launch_polybar.sh" << 'EOF'
+#!/usr/bin/env bash
+
+if type "xrandr" > /dev/null; then
+    for m in $(xrandr --query | grep " connected" | cut -d" " -f1); do
+        MONITOR=$m polybar --reload toph &
+    done
+else
+    polybar --reload toph &
+fi
+EOF
+
+chmod +x "$HOME/.config/polybar/launch_polybar.sh"
+
+echo "✅ Polybar installed and configured."
+
