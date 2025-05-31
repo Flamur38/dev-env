@@ -72,7 +72,7 @@ chmod +x runs/*
 
 - 🐧 Setup scripts for GNOME, XFCE
 - 🧰 Optional install flags
-- 🧪 Testing in Docker
+- 🧪 Testing in Docker.
 
 ---
 
