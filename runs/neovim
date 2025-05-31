@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+green() {
+  GREEN="\033[0;32m"
+  RESET="\033[0m"
+  echo -e "${GREEN}$1${RESET}"
+}
+
+green ">>> Installing base system dependencies..."
+
+sudo apt update && sudo apt install -y \
+  ninja-build gettext cmake unzip curl build-essential git \
+  lua5.1 liblua5.1-0-dev python3 python3-pip cargo \
+  ripgrep fd-find nodejs npm
+
+# Link fd-find as fd
+mkdir -p ~/.local/bin
+ln -sf "$(which fdfind)" ~/.local/bin/fd
+
+# Add ~/.local/bin to PATH (Zsh only, as requested)
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc
+export PATH="$HOME/.local/bin:$PATH"
+
+green ">>> Building and installing Neovim v0.11.0 from source..."
+
+git clone https://github.com/neovim/neovim.git ~/personal/neovim
+cd ~/personal/neovim
+git fetch
+git checkout v0.11.0
+make CMAKE_BUILD_TYPE=RelWithDebInfo
+sudo make install
+cd ~
+rm -rf ~/personal/neovim
+
+green ">>> Booting Neovim to trigger Lazy.nvim plugin install..."
+
+nvim --headless "+Lazy! sync" +qa
+
+green " ========= All Plugins are Installed ======== "
