@@ -1,0 +1,67 @@
+#!/bin/bash
+
+#===============================
+# Install Zig and Ghostty on Parrot OS
+#===============================
+
+set -e
+
+#=== Variables ==================
+ZIG_VERSION="0.13.0"
+ZIG_DIR="zig-linux-x86_64-${ZIG_VERSION}"
+ZIG_URL="https://ziglang.org/download/${ZIG_VERSION}/${ZIG_DIR}.tar.xz"
+ZIG_DEST="/opt/${ZIG_DIR}"
+GHOSTTY_REPO="https://github.com/mitchellh/ghostty.git"
+GHOSTTY_DIR="$HOME/ghostty"
+LOCAL_BIN="$HOME/.local/bin"
+DESKTOP_FILE="$HOME/.local/share/applications/ghostty.desktop"
+#================================
+
+#--- Step 1: Install dependencies ---
+echo "[*] Installing dependencies..."
+sudo apt update
+sudo apt install -y build-essential libgtk-4-dev libadwaita-1-dev git wget
+
+#--- Step 2: Download and extract Zig ---
+echo "[*] Downloading Zig ${ZIG_VERSION}..."
+cd ~/Downloads
+wget -q --show-progress "$ZIG_URL"
+tar -xf "${ZIG_DIR}.tar.xz"
+sudo mv "$ZIG_DIR" /opt/
+
+#--- Step 3: Export Zig to PATH ---
+export PATH="${ZIG_DEST}:$PATH"
+
+#--- Step 4: Clone Ghostty and checkout v1.0.0 ---
+echo "[*] Cloning Ghostty..."
+git clone "$GHOSTTY_REPO" "$GHOSTTY_DIR"
+cd "$GHOSTTY_DIR"
+git checkout v1.0.0
+
+#--- Step 5: Build Ghostty ---
+echo "[*] Building Ghostty..."
+mkdir -p "$LOCAL_BIN"
+"$ZIG_DEST/zig" build -p "$LOCAL_BIN" -Doptimize=ReleaseFast
+
+#--- Step 6: Create .desktop file ---
+echo "[*] Creating .desktop launcher..."
+mkdir -p "$(dirname "$DESKTOP_FILE")"
+
+cat <<EOF > "$DESKTOP_FILE"
+[Desktop Entry]
+Name=Ghostty
+Exec=$LOCAL_BIN/ghostty
+Icon=utilities-terminal
+Terminal=false
+Type=Application
+Categories=System;TerminalEmulator;
+EOF
+
+chmod +x "$DESKTOP_FILE"
+
+#--- Step 7: Update desktop database and rofi cache ---
+update-desktop-database ~/.local/share/applications/
+rm -rf ~/.cache/rofi-*
+
+echo "[✔] Ghostty installed successfully. Press Mod+D and type 'Ghostty' in Rofi to launch it."
+

@@ -59,8 +59,10 @@ font-1 = unifont:fontformat=truetype:size=15:antialias=false;0
 font-2 = FontAwesome:size=20
 
 modules-left = i3
-modules-center = memory cpu filesystem
+modules-center = memory cpu filesystem gpu-temp
 modules-right = wlan eth battery pulseaudio alsa date powermenu
+
+; modules-right = wlan eth battery pulseaudio alsa date gpu-temp powermenu
 
 tray-position = right
 tray-padding = 2
@@ -169,6 +171,13 @@ bar-empty-foreground = ${colors.foreground-alt}
 inherit = module/xbacklight
 type = internal/backlight
 card = intel_backlight
+
+
+[module/gpu-temp]
+type = custom/script
+exec = ~/.config/polybar/scripts/gpu-temp.sh
+interval = 5
+label = %output%
 
 [module/cpu]
 type = internal/cpu
